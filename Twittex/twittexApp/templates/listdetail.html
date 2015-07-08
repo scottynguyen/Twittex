@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static from staticfiles %}
+     {% block extra_head %}
+        <link href="{% static "css/login.css" %}" rel="stylesheet">
+     {% endblock %}
+
+{% block content %}
+<div class="container">
+<h1 class="well text-center">{{ list.title }}</h1>
+            <div>Admin: {{ list.admin.username }}</div>
+            <div>Userlist:</div>
+            <ol>
+            {% for user in userlist %}
+            <li>{{ user.username }}</li>
+            {% endfor %}
+            </ol>
+            <a href="follow/" class="btn btn-primary btn-sm">Follow Followerlist</a>
+            {% if list.admin == request.user %}
+            <a href="edit/" class="btn btn-primary btn-sm">Edit Followerlist/Add Users</a>
+            <a href="delete/" class="btn btn-primary btn-sm">Delete Followerlist</a>
+            {% endif %}
+</div>
+{% endblock content %}

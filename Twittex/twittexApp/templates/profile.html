@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block content %}
+	<br/>
+	<div class="container">
+	<div class="well">
+        {% if user.username = request.user.username %}
+            <h1>Welcome to your profile!</h1>
+        {% else %}
+		    <h1>Welcome to {{ user.username }}'s profile!</h1>
+        {% endif %}
+	</div>
+
+		<table>
+			<tr>
+				<td class="well" width="30%"><img class="img-responsive img-rounded" src="{{ user.userprofile.getPicture }}" alt="Profile Picture"/>
+				Description:<br/>{{ user.userprofile.desc }}<br/><br/>
+				{% if request.user = user %}
+            		<a href="/settings/edit" class="btn btn-primary btn-sm dropdown-toggle btn-block" role="button">Edit Profile</a>
+					<a href="/settings/password_change" class="btn btn-primary btn-sm dropdown-toggle btn-block" role="button">Edit Password</a>
+					{% elif follow = no %}
+					<a href={% url 'twittexApp:Follow' user.username %} class="btn btn-primary btn-sm dropdown-toggle btn-block" role="button">Follow</a>
+					{%elif follow = yes%}
+					<a href={% url 'twittexApp:Unfollow' user.username %}  class="btn btn-primary btn-sm dropdown-toggle btn-block" role="button">Unfollow</a>
+        {% endif %}
+				</td>
+				<td>
+					<div class="well well-sm">
+					<h2>@{{ user.username }}'s posts:</h2>
+					{% if privacy = yes %}
+						{% for posts in object_list %}
+							{% if posts.autor = user  %}
+							<table>
+							<tr>
+								<td><a href="/profile/{{ user.username }}">@{{ user.username }}</a> wrote at {{ posts.datum }}
+								<div class="Post">{{ posts.inhalt|safe }}</div>
+
+								{% if request.user = user %}
+<form action={% url 'twittexApp:viewPrivacy' posts.id %} method="post"> {% csrf_token %}
+<p> 
+	{% if posts.privacy = 'Pub' %}
+<select name="priv"> 
+        <option value="Pub">Public</option> 
+        <option value="OF">Only Followers</option> 
+        <option value="OM">Only Me</option> 
+</select> 
+<input type="submit" value="Change" /> 
+</p> 
+
+{% elif posts.privacy = 'OF' %}
+<select name="priv"> 
+        <option value="Pub">Public</option> 
+        <option value="OF" selected>Only Followers</option> 
+        <option value="OM">Only Me</option> 
+</select> 
+<input type="submit" value="Change" /> 
+</p> 
+
+{% else %}
+<select name="priv"> 
+        <option value="Pub">Public</option> 
+        <option value="OF" >Only Followers</option> 
+        <option value="OM"selected>Only Me</option> 
+</select> 
+<input type="submit" value="Change" /> 
+</p> 
+</form> 
+
+</select>
+{% endif %}
+</form>
+								<a href="/delete/{{ posts.id }}" class="btn btn-primary btn-sm">Delete</a>
+								{% endif %}
+								</td>
+							</tr>
+						</table>
+							{% endif %}
+						{% endfor %}
+					{% else %}
+						<table>
+							<tr>
+								<td>
+									<div>
+										Sorry, but only {{ user }} and who he is following can see those posts :/
+									</div>
+								</td>
+							</tr>
+						</table>
+					{% endif %}
+				</div>
+                </td>
+			</tr>
+		</table>
+     </div>
+{% endblock content %}

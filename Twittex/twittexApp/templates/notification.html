@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block extra_head %}
+	<link href="{% static "css/home.css" %}" rel="stylesheet">
+	{% endblock %}   
+{% block content %}
+
+<div class="container">
+<h1 class="well text-center">Who mentioned you on Twittex?</h1>
+            {% for posts in postss %}
+				<div class="well well-sm">
+					<table>
+						<tr>
+							<td><a href="/profile/{{ posts.autor.username }}">@{{ posts.autor.username }}</a><br/>
+                			{{ posts.inhalt|safe }}
+                			</td>
+						</tr>
+					</table>
+				</div>
+            {% endfor %}
+</div>
+{% endblock content %}
